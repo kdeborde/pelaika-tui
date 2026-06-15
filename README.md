@@ -57,4 +57,4 @@ The build follows a milestone path:
 - [ ] **M4** — interactive REPL with a transcript
 - [ ] **M5** — terminal polish (colors, spinner, raw mode)
 - [ ] **M6** — full Keycloak auth (PKCE + refresh) and saved chats
-- [ ] **M7** — the agentic tool loop: model-driven `read_file` / `write_file` / `run_bash`
+- [ ] **M7** — the agentic tool loop (`POST /chats/agent`): model-driven `read_file` / `write_file` / `run_bash`
