@@ -2,21 +2,14 @@ mod auth;
 mod config;
 mod models;
 
-use crate::auth::token_service;
-use crate::config::Config;
-use crate::models::ai_model;
+use crate::{auth::token::get_token, config::Config, models::ai_model};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenvy::dotenv().ok();
 
     let config = Config::from_env()?;
 
-    let kc_token = token_service::get_token(
-        &config.kc_token_endpoint,
-        &config.kc_client_id,
-        &config.username,
-        &config.password,
-    )?;
+    let kc_token = get_token(&config)?;
 
     let bearer = format!("Bearer {}", kc_token.access_token);
 
