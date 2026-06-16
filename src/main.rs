@@ -2,7 +2,11 @@ mod auth;
 mod config;
 mod models;
 
-use crate::{auth::token::get_token, config::Config, models::ai_model};
+use crate::{
+    auth::token::get_token,
+    config::Config,
+    models::ai_model::{self, AiModel},
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenvy::dotenv().ok();
@@ -15,10 +19,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let ai_models = get_available_models(&bearer, &config.api_base_url)?;
 
-    for model in ai_models {
-        println!("Name: {}", model.name);
-        println!("Size: {}", model.size);
-        println!("Capabilities: {:?}", model.capabilities);
+    let tool_models: Vec<AiModel> = ai_models
+        .into_iter()
+        .filter(|m| m.capabilities.iter().any(|c| c == "tools"))
+        .collect();
+
+    for ai_model in tool_models {
+        println!("Name: {}", ai_model.name);
+        println!("Size: {}", ai_model.size);
+        println!("Capabilities: {:?}", ai_model.capabilities);
     }
 
     Ok(())
