@@ -17,12 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let bearer = format!("Bearer {}", kc_token.access_token);
 
-    let ai_models = get_available_models(&bearer, &config.api_base_url)?;
-
-    let tool_models: Vec<AiModel> = ai_models
-        .into_iter()
-        .filter(|m| m.capabilities.iter().any(|c| c == "tools"))
-        .collect();
+    let tool_models = get_tool_models(&bearer, &config.api_base_url)?;
 
     for ai_model in tool_models {
         println!("Name: {}", ai_model.name);
@@ -33,7 +28,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn get_available_models(
+fn get_tool_models(
     bearer: &str,
     api_url: &str,
 ) -> Result<Vec<ai_model::AiModel>, Box<dyn std::error::Error>> {
@@ -47,5 +42,10 @@ fn get_available_models(
 
     let available_models: Vec<ai_model::AiModel> = serde_json::from_str(&body)?;
 
-    Ok(available_models)
+    let tool_models: Vec<AiModel> = available_models
+        .into_iter()
+        .filter(|m| m.capabilities.iter().any(|c| c == "tools"))
+        .collect();
+
+    Ok(tool_models)
 }
